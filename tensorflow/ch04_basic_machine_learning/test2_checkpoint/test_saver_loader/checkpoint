@@ -1,0 +1,2 @@
+model_checkpoint_path: "persist.ckpt"
+all_model_checkpoint_paths: "persist.ckpt"
