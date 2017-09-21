@@ -23,7 +23,7 @@ def inputs():
     is_third_class = tf.to_float(tf.equal(pclass, [3]))
 
     gender = tf.to_float(tf.equal(sex, ["female"]))
-    features = tf.transpose(tf.pack([is_first_class, is_second_class, is_third_class, gender, age]))
+    features = tf.transpose(tf.stack([is_first_class, is_second_class, is_third_class, gender, age]))
     survived = tf.reshape(survived, [100, 1])
     return features, survived
 
@@ -45,7 +45,7 @@ def loss(X, Y):
     return tf.reduce_sum(tf.squared_difference(Y, Y_predicted))
     """
     #use cross entropy
-    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(combine_inputs(X), Y))
+    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=Y, logits=combine_inputs(X)))
 
 def evaluate(sess, X, Y):
     predicted = tf.cast(inference(X) > 0.5, tf.float32)
@@ -55,7 +55,8 @@ def evaluate(sess, X, Y):
 if __name__ == "__main__":
     with tf.Session() as sess:
 
-        tf.initialize_all_variables().run()
+        #tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
 
         X, Y = inputs()
 
@@ -73,7 +74,8 @@ if __name__ == "__main__":
                 print "loss: ", sess.run([total_loss])
 
         evaluate(sess, X, Y)
-        writer = tf.train.SummaryWriter('./tensorboard_logistic_regression', sess.graph)
+        writer = tf.summary.FileWriter('./tensorboard_logistic_regression', sess.graph)
+        #writer = tf.train.SummaryWriter('./tensorboard_logistic_regression', sess.graph)
         writer.close()
 
         import time
