@@ -15,7 +15,7 @@ sess = tf.Session()
 sess.run(e)
 
 # Open a TensorFlow SummaryWriter to write our graph to disk
-writer = tf.train.SummaryWriter('./my_graph', sess.graph)
+writer = tf.summary.FileWriter('./my_graph', sess.graph)
 
 # Close our SummaryWriter and Session objects
 writer.close()

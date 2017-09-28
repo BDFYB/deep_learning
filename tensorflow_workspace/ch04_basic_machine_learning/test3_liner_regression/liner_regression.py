@@ -49,7 +49,7 @@ if __name__ == "__main__":
                 print "loss: ", sess.run([total_loss])
 
         evaluate(sess, X, Y)
-        writer = tf.train.SummaryWriter('./tensorboard_liner_regression', sess.graph)
+        writer = tf.summary.FileWriter('./tensorboard_liner_regression', sess.graph)
         writer.close()
         coord.request_stop()
         coord.join(threads)

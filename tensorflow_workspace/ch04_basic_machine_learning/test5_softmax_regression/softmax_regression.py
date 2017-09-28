@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
         evaluate(sess, X, Y)
         writer = tf.summary.FileWriter('./tensorboard_softmax_regression', sess.graph)
-        #writer = tf.train.SummaryWriter('./tensorboard_logistic_regression', sess.graph)
+        #writer = tf.summary.FileWriter('./tensorboard_logistic_regression', sess.graph)
         writer.close()
 
         import time

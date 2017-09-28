@@ -11,7 +11,7 @@ with tf.name_scope("Scope_B"):
 
 e = tf.add(b, d, name="output")
 
-writer = tf.train.SummaryWriter('./name_scope_1', graph=tf.get_default_graph())
+writer = tf.summary.FileWriter('./name_scope_1', graph=tf.get_default_graph())
 writer.close()
 
 
@@ -43,7 +43,7 @@ with graph.as_default():
 
     out = tf.maximum(C_out, D_out)   
 
-writer = tf.train.SummaryWriter('./name_scope_2', graph=graph)
+writer = tf.summary.FileWriter('./name_scope_2', graph=graph)
 writer.close()
 
 # To start TensorBoard after running this file, execute the following command:

@@ -52,7 +52,7 @@ with graph.as_default():
 sess = tf.Session(graph=graph)
 
 # Open a SummaryWriter to save summaries
-writer = tf.train.SummaryWriter('./improved_graph', graph)
+writer = tf.summary.FileWriter('./improved_graph', graph)
 
 # Initialize Variables
 sess.run(init)
