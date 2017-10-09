@@ -1,5 +1,6 @@
 #encoding=utf-8
 import tensorflow as tf
+import numpy as np
 
 if __name__ == "__main__":
     image_hight = 939
@@ -21,7 +22,8 @@ if __name__ == "__main__":
 
     image_mat_record = tf.decode_raw(tf_record_features["image"], tf.uint8)
     #这样读出的是一个List，需要对image_mat进行reshape
-    image_mat = tf.reshape(image_mat_record, [image_hight, image_width, channel])
+    image_mat = tf.reshape(image_mat_record, [1, image_hight, image_width, channel])
+    image_mat = tf.cast(image_mat, tf.float32)
 
     image_label = tf.cast(tf_record_features["label"], tf.string)
 
@@ -35,11 +37,19 @@ if __name__ == "__main__":
         print(sess.run(tf.shape(image_mat)))
 
         #对图像进行下处理，为了查看图像。正常情况下处理要放到存储部分，处理后直接存为TFRecord文件
-        
+        kernel = tf.constant([
+            [[[-1.], [0.0], [0.0]], [[0.0], [-1.], [0.0]], [[0.0], [0.0], [-1.]]],
+            [[[-1.], [0.0], [0.0]], [[0.0], [-1.], [0.0]], [[0.0], [0.0], [-1.]]],
+            [[[-1.], [0.0], [0.0]], [[0.0], [-1.], [0.0]], [[0.0], [0.0], [-1.]]],
+        ])
+        #需要四维输入
+        image_mat_out = sess.run(tf.nn.conv2d(image_mat, kernel, strides = [1, 1, 1, 1], padding='VALID'))
+        print(sess.run(tf.shape(image_mat_out)))
         #看下读取的数据图是什么样子的(使用Tensorboard打印图片)
-        graph_writer = tf.summary.FileWriter('./tfr_reader_graph', sess.graph)
-        image = tf.expand_dims(image_mat, 0)
-        summary_op = tf.summary.image("image1", image)
+        graph_writer = tf.summary.FileWriter('./tensorboard_tfr_reader_graph', sess.graph)
+
+        # image = tf.expand_dims(image_mat_out, 0)
+        summary_op = tf.summary.image("image1", image_mat_out)
 
         # 运行并写入日志
         summary = sess.run(summary_op)

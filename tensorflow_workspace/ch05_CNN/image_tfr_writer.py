@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
 
         #存储tensorboard，看下读取的数据图是什么样子的(使用Tensorboard打印图片)
-        graph_writer = tf.summary.FileWriter('./tfr_writer_graph', sess.graph)
+        graph_writer = tf.summary.FileWriter('./tensorboard_tfr_writer_graph', sess.graph)
         image = tf.expand_dims(image_mat, 0)
         summary_op = tf.summary.image("image1", image)
 
