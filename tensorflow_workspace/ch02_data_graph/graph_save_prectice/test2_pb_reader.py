@@ -48,5 +48,5 @@ with tf.Session(graph=g1) as sess:
     print("DONE")
 
     #print None, this method can only save graph, not data.
-    print(sess.run(output, {input_x:data}))
+    print(sess.run(output, {input_x:data1}))
     #print("result:",result)

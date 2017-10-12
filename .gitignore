@@ -1,3 +1,4 @@
 *tensorboard_*
 .DS_Store
 *.ipynb_checkpoints*
+*graph_save_prectice*
