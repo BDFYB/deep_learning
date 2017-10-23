@@ -2,3 +2,6 @@
 .DS_Store
 *.ipynb_checkpoints*
 *graph_save_prectice*
+tensorflow_workspace/ch05_CNN/cnn_realize/data
+tensorflow_workspace/ch05_CNN/cnn_realize/train_graph
+tensorflow_workspace/ch05_CNN/cnn_realize/trained_module

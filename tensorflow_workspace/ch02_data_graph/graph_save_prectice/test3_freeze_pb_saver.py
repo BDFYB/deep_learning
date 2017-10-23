@@ -19,6 +19,7 @@ if os.path.exists(FLAGS.output_dir) is False:
 #freeze之前必须明确哪个是输出结点,也就是我们要得到推论结果的结点  
 #输出结点可以看我们模型的定义  
 #只有定义了输出结点,freeze才会把得到输出结点所必要的结点都保存下来,或者哪些结点可以丢弃。所以,output_node_names必须根据不同的网络进行修改
+#对应test1的数据
 
 graph = tf.Graph()
 output_node_names = ["op_to_restore"]

@@ -49,8 +49,9 @@ def loss(X, Y):
 
 def evaluate(sess, X, Y):
     predicted = tf.cast(tf.arg_max(inference(X), 1), tf.int32)
+    print("predeicted: %s"%sess.run(predicted))
     #准确率
-    print sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, Y), tf.float32)))
+    print(sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, Y), tf.float32))))
 
 if __name__ == "__main__":
     with tf.Session() as sess:
@@ -71,7 +72,7 @@ if __name__ == "__main__":
         for step in range(training_steps):
             sess.run([train_op])
             if step % 300 == 0:
-                print "loss: ", sess.run([total_loss])
+                print("loss: ", sess.run([total_loss]))
 
         evaluate(sess, X, Y)
         writer = tf.summary.FileWriter('./tensorboard_softmax_regression', sess.graph)
