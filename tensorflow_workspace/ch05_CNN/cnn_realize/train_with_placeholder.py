@@ -1,4 +1,9 @@
 #encoding=utf-8
+"""
+与train.py相比，本文件利用了placeholder()传入数据
+主要解决问题：如果不使用placeholder的话，无法在freeze后的模型中传入新数据，导致无法利用。
+即train.py仅能用作训练后实时跑出验证集的结果，不能单独跑
+"""
 
 import tensorflow as tf
 import os
@@ -52,9 +57,11 @@ def _read_records(file_name, graph):
     return image_batch, label_batch
 
 
-def build_cnn_module(image_batch, train_labels, graph):
+def get_cnn_module(graph):
     with graph.as_default():
-        float_image_batch = tf.image.convert_image_dtype(image_batch, tf.float32)
+        image_batch_holder = tf.placeholder(dtype=tf.int32, shape=(None, 250, 151, 1), name="feed_image_batch")
+        train_labels_holder = tf.placeholder(dtype=tf.int32, shape=(None,), name="feed_train_labels")
+        float_image_batch = tf.image.convert_image_dtype(image_batch_holder, tf.float32)
         conv2d_layer_one = tf.contrib.layers.convolution2d(
             float_image_batch,
             num_outputs=32,     # The number of filters to generate, 即有多少个卷积核
@@ -92,8 +99,8 @@ def build_cnn_module(image_batch, train_labels, graph):
         flattened_layer_two = tf.reshape(
             pool_layer_two,
             [
-                FLAGS.batch_size,  # Each image in the image_batch
-                -1           # Every other dimension of the input
+                -1,  # Each image in the image_batch
+                38912,           # Every other dimension of the input
             ])
 
         flattened_layer_two.get_shape()
@@ -125,7 +132,7 @@ def build_cnn_module(image_batch, train_labels, graph):
         # setup-only-ignore
         loss = tf.reduce_mean(
             tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=final_fully_connected, labels=train_labels))
+                logits=final_fully_connected, labels=train_labels_holder))
 
         # 一定把trainable=False，否则参与训练
         g_steps = tf.Variable(0, trainable=False)
@@ -169,11 +176,12 @@ if __name__ == "__main__":
     image_batch, label_batch = _read_records(image_file_names, graph)
 
     # Match every label from label_batch and return the index where they exist in the list of classes
-    train_labels = tf.map_fn(lambda l: tf.where(tf.equal(labels, l))[0,0:1][0], label_batch, dtype=tf.int64)
+    label_batch_in_index = tf.map_fn(lambda l: tf.where(tf.equal(labels, l))[0,0:1][0], label_batch, dtype=tf.int64)
 
     # 2.build graph
-    loss, optimizer, train_prediction = build_cnn_module(image_batch, train_labels, graph)
-    output_node_names = ["infer"]
+    loss, optimizer, train_prediction = get_cnn_module(graph)
+    #todo: feed_train_labels不显示存，存不进去，需要确定下原因
+    output_node_names = ["infer", "feed_train_labels"]
     # 3 tensorboard 
 
     loss_summary = tf.summary.scalar("train_loss", loss)
@@ -190,23 +198,30 @@ if __name__ == "__main__":
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
         for current_step in range(rounds):
+            image_batch_data, label_batch_data = sess.run([image_batch, label_batch_in_index])
+            feed_dict = {
+                # http://blog.csdn.net/ztf312/article/details/72859075
+                # 带引号的需要 key:0这种
+                "feed_image_batch:0" : image_batch_data,
+                "feed_train_labels:0" : label_batch_data,
+            }
             if current_step % 500 == 0:
                 print("step: %s" % current_step)
                 train_summary_writer.flush()
 
-            _, g_loss, g_summary, t_labels, t_image_batch = sess.run(
-                        [optimizer, loss, summary_op, train_labels, image_batch])
-            print(t_labels.shape)
-            print(t_image_batch.shape)
+            _, g_loss, g_summary, t_labels = sess.run(
+                        [optimizer, loss, summary_op, label_batch_in_index],
+                        feed_dict)
+            #print(t_labels)
             #print(g_loss)
 
             train_summary_writer.add_summary(g_summary, current_step)
 
         #make freeze module for infer
         output_graph_def = graph_util.convert_variables_to_constants(  
-         sess,   
-         input_graph_def,   
-         output_node_names, # We split on comma for convenience  
+            sess,   
+            input_graph_def,   
+            output_node_names, # We split on comma for convenience  
         ) 
 
         # Finally we serialize and dump the output graph to the filesystem  
