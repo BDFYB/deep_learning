@@ -38,7 +38,10 @@ if __name__ == "__main__":
             }
             cost, _ = sess.run([model.cost, model.optimize], feed_dict)
             average.append(cost)
-            print('{}: {:5.1f}'.format(index + 1, sum(average) / len(average)))
+            if index%10000 == 0:
+                print('{}: {:5.1f}'.format(index + 1, sum(average) / len(average)))
+                if index > 100000:
+                    break
 
-            embeddings = sess.run(model.embeddings)
-    np.save(WIKI_DOWNLOAD_DIR + '/embeddings.npy', embeddings)
+        embeddings = sess.run(model.embeddings)
+        np.save(WIKI_DOWNLOAD_DIR + '/embeddings.npy', embeddings)
