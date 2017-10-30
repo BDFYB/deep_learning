@@ -1,7 +1,7 @@
 import random
 
 
-def skipgrams(pages, max_context):
+def Skipgrams(pages, max_context):
     """Form training pairs according to the skip-gram model."""
     for words in pages:
         """
