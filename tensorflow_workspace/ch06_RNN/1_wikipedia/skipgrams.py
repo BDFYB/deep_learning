@@ -10,6 +10,7 @@ def Skipgrams(pages, max_context):
         enumerate多用于在for循环中得到计数
         """
         for index, current in enumerate(words):
+            print("Skipgrams")
             context = random.randint(1, max_context)
             for target in words[max(0, index - context): index]:
                 yield current, target

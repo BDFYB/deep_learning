@@ -5,6 +5,7 @@ import skipgrams
 import batched
 import collections
 import tensorflow as tf
+import numpy as np
 
 WIKI_DOWNLOAD_DIR = './wikipedia'
 
@@ -33,7 +34,7 @@ if __name__ == "__main__":
         average = collections.deque(maxlen=100)
         for index, batch in enumerate(batches):
             feed_dict = {
-                data:batch[0],
+                data: batch[0],
                 target: batch[1],
             }
             cost, _ = sess.run([model.cost, model.optimize], feed_dict)
