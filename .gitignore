@@ -2,6 +2,10 @@
 .DS_Store
 *.ipynb_checkpoints*
 *graph_save_prectice*
+*__pycache__*
+*__init__.py
 tensorflow_workspace/ch05_CNN/cnn_realize/data
 tensorflow_workspace/ch05_CNN/cnn_realize/train_graph
 tensorflow_workspace/ch05_CNN/cnn_realize/trained_module
+tensorflow_workspace/ch06_RNN/1_wikipedia/wikipedia/
+tensorflow_workspace/ch06_RNN/2_imdb/imdb/
