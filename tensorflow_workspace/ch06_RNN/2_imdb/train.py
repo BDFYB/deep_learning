@@ -4,6 +4,7 @@ import imdb_movie_reviews
 import embedding
 import rnn_module
 from helpers import attribute_dictionary
+import numpy as np
 
 def preprocessd_batch(iterator, length, embedding, batch_size):
     #iter() 返回iterator对象，就是有个next()方法的对象
@@ -29,6 +30,7 @@ if __name__ == "__main__":
             rnn_hidden = 300,
             optimizer = tf.train.RMSPropOptimizer(0.002),
             batch_size = 20,
+            gradient_clipping = 0,
         )
     reviews = imdb_movie_reviews.ImdbMovieReviews(IMDB_DOWNLOAD_DIR)
     length = max(len(x[0]) for x in reviews)
@@ -50,4 +52,5 @@ if __name__ == "__main__":
                 target: batch[1],
             }
             error, _ = sess.run([model.error, model.optimizer], feed_data)
-            print('{}: {:3.1f}%'.format(index + 1, 100 * error))
+            if index % 1000 == 0:
+                print('{}: {:3.1f}%'.format(index + 1, 100 * error))

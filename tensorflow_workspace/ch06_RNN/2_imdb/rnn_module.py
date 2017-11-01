@@ -9,8 +9,8 @@ class LearningModel(object):
         self.target = target
         self.params = params
         self.prediction    
-        self.loss
-        self.optimize
+        self.cost
+        self.optimizer
         self.error
 
     #装饰器是一个函数，其主要用途是包装另一个函数或类。这种包装的首要目的是透明地修改或增强被包装对象的行为。
@@ -44,17 +44,17 @@ class LearningModel(object):
         return cross_entropy
 
     @lazy_property
-    def optimize(self):
+    def optimizer(self):
         gradient = self.params.optimizer.compute_gradients(self.cost)
-        if self.params.gradient_clipping:
+        if self.params.gradient_clipping == 1:
             limit = self.params.gradient_clipping
             gradient = [
                 (tf.clip_by_value(g, -limit, limit), v)
                 if g is not None else (None, v)
                 for g, v in gradient
             ]
-        optimize = self.params.optimizer.apply_gradients(gradient)
-        return optimize
+        optimizer = self.params.optimizer.apply_gradients(gradient)
+        return optimizer
 
     @lazy_property
     def error(self):
@@ -62,7 +62,7 @@ class LearningModel(object):
         return tf.reduce_mean(tf.cast(mistakes, tf.float32))
 
 
-    @lazy_property
+    @staticmethod
     def _last_relevant(output, length):
         batch_size = tf.shape(output)[0]
         max_length = int(output.get_shape()[1])
