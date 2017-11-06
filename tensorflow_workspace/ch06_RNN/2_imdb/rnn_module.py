@@ -35,12 +35,12 @@ class LearningModel(object):
         weight = tf.Variable(tf.truncated_normal(
             [self.params.rnn_hidden, num_classes], stddev=0.01))
         bias = tf.Variable(tf.constant(0.1, shape=[num_classes]))
-        prediction = tf.nn.softmax(tf.matmul(last, weight) + bias)
+        prediction = tf.nn.softmax(tf.matmul(last, weight) + bias, name="softmax_prediction")
         return prediction
 
     @lazy_property
     def cost(self):
-        cross_entropy = -tf.reduce_sum(self.target * tf.log(self.prediction))
+        cross_entropy = -tf.reduce_sum(self.target * tf.log(self.prediction), name="loss")
         return cross_entropy
 
     @lazy_property

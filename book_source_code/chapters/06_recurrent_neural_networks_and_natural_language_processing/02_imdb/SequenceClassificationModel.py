@@ -31,7 +31,7 @@ class SequenceClassificationModel:
             sequence_length=self.length,
         )
         last = self._last_relevant(output, self.length)
-        # Softmax layer.
+        # Fully connected and Softmax layer.
         num_classes = int(self.target.get_shape()[1])
         weight = tf.Variable(tf.truncated_normal(
             [self.params.rnn_hidden, num_classes], stddev=0.01))

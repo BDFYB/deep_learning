@@ -46,3 +46,4 @@ if __name__ == "__main__":
 
         embeddings = sess.run(model.embeddings)
         np.save(WIKI_DOWNLOAD_DIR + '/embeddings.npy', embeddings)
+        
