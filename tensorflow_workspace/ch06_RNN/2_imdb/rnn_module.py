@@ -16,6 +16,7 @@ class LearningModel(object):
     #装饰器是一个函数，其主要用途是包装另一个函数或类。这种包装的首要目的是透明地修改或增强被包装对象的行为。
     @lazy_property
     def length(self):
+        # 输入序列有效长度，用于获取rnn最后一个输出, (batch_size, length)
         used = tf.sign(tf.reduce_max(tf.abs(self.data), reduction_indices=2))
         length = tf.reduce_sum(used, reduction_indices=1)
         length = tf.cast(length, tf.int32)
@@ -24,12 +25,14 @@ class LearningModel(object):
     @lazy_property
     def prediction(self):
         #rnn
+        # size of output: (batch_size, 2758(序列最大长度), 300(number of hidden_layer))
         output, _ = tf.nn.dynamic_rnn(
             self.params.rnn_cell(self.params.rnn_hidden),
             self.data,
             dtype = tf.float32,
             sequence_length = self.length)
         last = self._last_relevant(output, self.length)
+        # size of last: (batch_size, 300)
         #softmax
         num_classes = int(self.target.get_shape()[1])
         weight = tf.Variable(tf.truncated_normal(

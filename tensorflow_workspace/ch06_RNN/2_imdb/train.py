@@ -34,6 +34,10 @@ if __name__ == "__main__":
     FORZEN_GRAPH = './frozen_graph/freeze_module.pb'
     params = attribute_dictionary.AttrDict(
             rnn_cell = tf.nn.rnn_cell.GRUCell,
+            #rnn cell 隐藏层单元个数
+            #sequence长度是输入的时间序列（句子）长度，就是整个句子读入lstm隐层需要的迭代次数。
+            #单个时间节点t输入层是词向量。词向量Xn的长度是n，其中与输入有关的权重W矩阵都为m*n，
+            #m是隐层的神经元个数（lstm层神经元个数，在这里是rnn_hidden参数），与前一隐层输入状态有关的权重U矩阵都为m*m。
             rnn_hidden = 300,
             optimizer = tf.train.RMSPropOptimizer(0.002),
             batch_size = 20,
@@ -71,7 +75,9 @@ if __name__ == "__main__":
 
         for index, batch in enumerate(batchs):
             feed_data = {
+                # size: (batch_size, 2758(序列最大长度), 200(embedding deminsion))
                 data: batch[0],
+                # size: (batch_size, 2(classes))
                 target: batch[1],
             }
             error, _, g_summary = sess.run([model.error, model.optimizer, total_summary_op], feed_data)

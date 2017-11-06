@@ -1,4 +1,5 @@
 *tensorboard_*
+tensorflow_source_code/tensorflow/
 .DS_Store
 *.ipynb_checkpoints*
 *graph_save_prectice*
