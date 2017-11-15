@@ -25,7 +25,7 @@ class LearningModel(object):
     @lazy_property
     def prediction(self):
         #rnn
-        # size of output: (batch_size, 2758(序列最大长度), 300(number of hidden_layer))
+        # size of output: (batch_size, 2758(dynamic_rnn返回序列最大长度，不是序列长度，切记), 300(number of hidden_layer))
         output, _ = tf.nn.dynamic_rnn(
             self.params.rnn_cell(self.params.rnn_hidden),
             self.data,
@@ -72,5 +72,6 @@ class LearningModel(object):
         output_size = int(output.get_shape()[2])
         index = tf.range(0, batch_size) * max_length + (length -1)
         flat = tf.reshape(output, [-1, output_size])
+        #把index对应元素取出
         relevant = tf.gather(flat, index)
         return relevant

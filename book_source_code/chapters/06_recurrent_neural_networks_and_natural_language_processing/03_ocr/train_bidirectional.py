@@ -6,8 +6,7 @@ import numpy as np
 from helpers import AttrDict
 
 from OcrDataset import OcrDataset
-from BidirectionalSequenceLabellingModel import \
-    BidirectionalSequenceLabellingModel
+from BidirectionalSequenceLabellingModel import BidirectionalSequenceLabellingModel
 from batched import batched
 
 params = AttrDict(

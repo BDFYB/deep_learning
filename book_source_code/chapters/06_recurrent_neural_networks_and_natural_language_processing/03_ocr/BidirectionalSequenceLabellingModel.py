@@ -43,6 +43,7 @@ class BidirectionalSequenceLabellingModel:
             sequence_length=self.length,
             scope='rnn-backward')
         backward = tf.reverse_sequence(backward, length_64, seq_dim=1)
+        #tf 1.0 后concat(tensor, n)
         output = tf.concat(2, [forward, backward])
         return output
 
