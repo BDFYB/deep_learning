@@ -20,4 +20,4 @@ if __name__ == "__main__":
     for i in iterable_obj:
         print("new in main loop")
         print(i)
-        time.sleep(2)
+        time.sleep(1)

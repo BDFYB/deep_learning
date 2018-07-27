@@ -88,7 +88,7 @@ def _make_tfr_file(data_dict, output_dir):
             }))
             file_writer.write(example.SerializeToString())
     file_writer.close()
-    file_object.close( )
+    file_object.close()
     sess.close()
 
 

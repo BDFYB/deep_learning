@@ -1,0 +1,10 @@
+OCR dataset
+    This dataset contains handwritten words dataset collected by Rob Kassel at MIT Spoken Language Systems Group. I selected a "clean" subset of the words and rasterized and normalized the images of each letter. Since the first letter of each word was capitalized and the rest were lowercase, I removed the first letter and only used the lowecase letters. The tab delimited data file (letter.data.gz) contains a line for each letter, with its label, pixel values, and several additional fields listed in letter.names file. 
+Fields
+    id: each letter is assigned a unique integer id
+    letter: a-z
+    next_id: id for next letter in the word, -1 if last letter
+    word_id: each word is assigned a unique integer id (not used)
+    position: position of letter in the word (not used)
+    fold: 0-9 -- cross-validation fold
+    p_i_j: 0/1 -- value of pixel in row i, column j
